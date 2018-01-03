@@ -1,0 +1,42 @@
+{
+  "name": "my-top-music",
+  "version": "1.0.0",
+  "description": "My dream project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vsheremet92/my-top-music.git"
+  },
+  "author": "Valerii",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vsheremet92/my-top-music/issues"
+  },
+  "homepage": "https://github.com/vsheremet92/my-top-music#readme",
+  "devDependencies": {
+    "@types/react": "^16.0.33",
+    "@types/react-dom": "^16.0.3",
+    "@types/react-router": "^4.0.20",
+    "browser-sync": "^2.23.2",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlhint": "^1.0.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-typescript": "^3.2.3",
+    "gulp-uglify-es": "^0.1.9",
+    "gulp-util": "^3.0.8",
+    "typescript": "^2.6.2",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "browserify": "^14.5.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router": "^4.2.0"
+  }
+}
