@@ -1,10 +1,11 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const browserify = require("browserify");
-const bsync = require('browser-sync');
+const bsync = require('browser-sync').create();
 const htmlhint = require("gulp-htmlhint");
 const ts = require('gulp-typescript');
 const plumber = require('gulp-plumber');
+const nodemon = require('nodemon');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 const concat = require("gulp-concat");
@@ -31,18 +32,19 @@ gulp.task('sass', ()=> {
     .pipe(bsync.reload({stream: true}))
 })
 
-gulp.task('watch', ['browserify-compile', 'sass', 'html'], ()=> {
+gulp.task('watch', ['ts-compile-server', 'sass', 'html', 'browserify-compile'], ()=> {
+    gulp.watch('server/source/**/*.ts', ['ts-compile-server']);
     gulp.watch('client/components/**/*.tsx', ['browserify-compile']);
     gulp.watch('client/styles/**/*.scss', ['sass']);
     gulp.watch('client/html/**/*.html', ['html']);
 })
 
-gulp.task('bsync', ['watch'], ()=> {
-    bsync({
-        server: {
-            baseDir: path.build.base
-        }
-    })
+gulp.task('bsync', ['serve'], ()=> {
+    bsync.init(null, {
+		      proxy: "http://localhost:5000",
+          files: ["client/build/*/*.*"],
+          port: 7000
+      });
 })
 
 gulp.task('html', compileHtml);
@@ -56,6 +58,7 @@ function compileHtml() {
 }
 
 gulp.task("ts-compile-client", compileClientTs);
+gulp.task('ts-compile-server', compileServerTs);
 
 const clientTs = ts.createProject('./client/tsconfig.json');
 function compileClientTs() {
@@ -65,6 +68,17 @@ function compileClientTs() {
   return tsResult.js
       .pipe(plumber())
       .pipe(gulp.dest('client/obj/js'))
+}
+
+const serverTs = ts.createProject(`./server/tsconfig.json`);
+function compileServerTs() {
+    let tsResult = serverTs.src()
+        .pipe(plumber())
+        .pipe(serverTs());
+    return tsResult.js
+        .pipe(plumber())
+        .pipe(gulp.dest(`server/build`))
+        .pipe(bsync.reload({stream: true}))
 }
 
 const browserifyInstance = browserify({
@@ -90,5 +104,17 @@ function browserifyClient() {
         .pipe(gulp.dest('client/build/js'))
         .pipe(bsync.reload({stream: true}))
 }
+
+gulp.task('serve', ['watch'], function() {
+    nodemon({
+        script: `server/build`,
+        ext: 'js',
+        args: process.argv.slice(3),
+        ignore: ['client/**/*', 'node_modules/**/*', 'gulpfile.js'],
+        env: {
+            'NODE_ENV': 'development'
+        }
+    });
+});
 
 gulp.task('default', ['bsync']);

@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import { Widget } from './widget'
 export class App extends React.Component<{}, {}> {
 
     state = {
@@ -15,6 +15,7 @@ export class App extends React.Component<{}, {}> {
                 }}>
                   Click me
                 </button>
+                <Widget text="String"/>
             </div>
         )
     }
